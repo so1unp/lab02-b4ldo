@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        fd_destino = open(argv[3], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        fd_destino = open(argv[3], O_WRONLY | O_TRUNC);
         if(fd_destino == -1) {
             perror("Error al abrir el archivo de destino");
             exit(EXIT_FAILURE);
