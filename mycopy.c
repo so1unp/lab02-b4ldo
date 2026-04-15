@@ -54,21 +54,22 @@ int main(int argc, char *argv[]) {
         FILE *src, *dst;
         size_t r_items, w_items;
 
-        //Chequear si el archivo existe
-
-        FILE *tmp = fopen(argv[3], "r");
-            if (tmp != NULL){
-                fclose(tmp);
-                fprintf(stderr, "Error el archivo ya existe");
-                exit(EXIT_FAILURE);
-            }
-
+        //Abre el origen
         src = fopen(argv[2], "rb");
         if (src == NULL) {
             perror("Error al abrir el archivo de origen (fopen)");
             exit(EXIT_FAILURE);
         }
 
+        //Verifica si destino existe
+        FILE *tmp = fopen(argv[3], "r");
+            if (tmp != NULL){
+                fclose(tmp);
+                perror ("El archivo de destino ya existe");
+                exit(EXIT_FAILURE);
+            }
+
+        //Crea destino
         dst = fopen(argv[3], "wb");
         if (dst == NULL) {
             perror("Error al abrir el archivo de destino (fopen)");
