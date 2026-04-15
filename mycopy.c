@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        fd_destino = open(argv[3], O_WRONLY | O_TRUNC);
+        fd_destino = open(argv[3], O_WRONLY | O_CREAT | O_EXCL, 0644);
         if(fd_destino == -1) {
             perror("Error al abrir el archivo de destino");
             exit(EXIT_FAILURE);
@@ -51,7 +51,43 @@ int main(int argc, char *argv[]) {
         close(fd_destino);
 
     } else if (modo == 'f') {
-        // implementar utilizando funciones de la biblioteca
+        FILE *src, *dst;
+        size_t r_items, w_items;
+
+        //Chequear si el archivo existe
+
+        FILE *tmp = fopen(argv[3], "r");
+            if (tmp != NULL){
+                fclose(tmp);
+                fprintf(stderr, "Error el archivo ya existe");
+                exit(EXIT_FAILURE);
+            }
+
+        src = fopen(argv[2], "rb");
+        if (src == NULL) {
+            perror("Error al abrir el archivo de origen (fopen)");
+            exit(EXIT_FAILURE);
+        }
+
+        dst = fopen(argv[3], "wb");
+        if (dst == NULL) {
+            perror("Error al abrir el archivo de destino (fopen)");
+            exit(EXIT_FAILURE);
+        }
+        while ((r_items = fread(buffer, 1, BUFFER_SIZE, src)) > 0) {
+            w_items = fwrite(buffer, 1, r_items, dst);
+
+            if (w_items < r_items) {
+                perror ("Error al escribir en el archivo de destino (fwrite)");
+                fclose(src);
+                fclose(dst);
+                exit(EXIT_FAILURE);
+            }
+        }
+
+    fclose(src);
+    fclose(dst);
+
     }
     // Termina la ejecución del proceso.
     exit(EXIT_SUCCESS);
